@@ -73,3 +73,12 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Expo
+.expo/
+
+# Custom Ignores
+.ruby-version
+Gemfile.lock
+android.bak/
+ios.bak/

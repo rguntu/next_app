@@ -1,46 +1,48 @@
-import { Client, Account } from 'appwrite';
+import { Client, Account, ID } from 'appwrite';
 
-const client = new Client();
-
-client
-    .setEndpoint('https://fra.cloud.appwrite.io/v1') // Replace with your Appwrite endpoint
-    .setProject('68b5ca790034120754e6'); // Replace with your Appwrite project ID
+// Initialize the Appwrite client
+const client = new Client()
+    .setEndpoint('https://fra.cloud.appwrite.io/v1') // Your Appwrite Endpoint
+    .setProject('68b5ca790034120754e6'); // Your project ID
 
 const account = new Account(client);
 
-export const login = async (email, password) => {
-    try {
-        return await account.createEmailPasswordSession(email, password);
-    } catch (error) {
-        console.error('Error logging in:', error);
-        throw error;
-    }
+/**
+ * Signs in the user with email and password.
+ * @param {string} email - The user's email.
+ * @param {string} password - The user's password.
+ * @returns {Promise<object>} A promise that resolves to the user session.
+ */
+export const signIn = (email, password) => {
+  return account.createEmailPasswordSession(email, password);
 };
 
-export const register = async (email, password, name) => {
-    try {
-        await account.create('unique()', email, password, name);
-        return await login(email, password);
-    } catch (error) {
-        console.error('Error registering:', error);
-        throw error;
-    }
+/**
+ * Creates a new user account.
+ * @param {string} email - The new user's email.
+ * @param {string} password - The new user's password.
+ * @param {string} name - The new user's name.
+ * @returns {Promise<object>} A promise that resolves to the newly created user.
+ */
+export const signUp = (email, password, name) => {
+  return account.create(ID.unique(), email, password, name);
 };
 
-export const logout = async () => {
-    try {
-        await account.deleteSession('current');
-    } catch (error) {
-        console.error('Error logging out:', error);
-        throw error;
-    }
+/**
+ * Signs out the current user.
+ * @returns {Promise<object>} A promise that resolves when the session is deleted.
+ */
+export const signOut = () => {
+  return account.deleteSession('current');
 };
 
-export const getCurrentUser = async () => {
-    try {
-        return await account.get();
-    } catch (error) {
-        console.error('Error getting current user:', error);
-        return null;
-    }
+/**
+ * Gets the currently logged-in user.
+ * @returns {Promise<object>} A promise that resolves to the user object or null.
+ */
+export const getCurrentUser = () => {
+  return account.get();
 };
+
+// It's a good practice to export the account object if you need more advanced features elsewhere
+export default account;
